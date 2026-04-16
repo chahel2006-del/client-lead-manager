@@ -11,7 +11,7 @@ import { StatsBoard } from './StatsBoard';
 import ErrorBoundary from './ErrorBoundary';
 import { cn } from '../lib/utils';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/leads';
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 function Dashboard({ onLogout }) {
   const [leads, setLeads] = useState([]);
@@ -22,15 +22,16 @@ function Dashboard({ onLogout }) {
   
   const fetchLeads = useCallback(async () => {
     setIsLoading(true);
+    console.log(`[API] Fetching leads from: ${BASE_URL}/api/leads`);
     try {
-      const response = await axios.get(API_URL);
+      const response = await axios.get(`${BASE_URL}/api/leads`);
       if (response && response.data && Array.isArray(response.data)) {
         setLeads(response.data);
       } else {
         setLeads([]);
       }
     } catch (error) {
-      console.error("Error fetching leads:", error);
+      console.error("[API Error] Failed to fetch leads:", error);
       toast.error("Failed to sync pipeline data");
       setLeads([]);
     } finally {

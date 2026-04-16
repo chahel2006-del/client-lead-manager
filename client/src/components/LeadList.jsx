@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn, getLeadStatus } from '../lib/utils';
 import { StatusBadge } from './StatusBadge';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/leads';
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 function LeadList({ leads = [], isLoading, onRefresh, externalSearchTerm = '' }) {
   const [statusFilter, setStatusFilter] = useState('all');
@@ -17,32 +17,38 @@ function LeadList({ leads = [], isLoading, onRefresh, externalSearchTerm = '' })
   const [sortBy, setSortBy] = useState('newest');
 
   const handleUpdate = async (id, payload) => {
+    console.log(`[API] Updating lead ${id} at: ${BASE_URL}/api/leads/${id}`);
     try {
-      await axios.put(`${API_URL}/${id}`, payload);
+      await axios.put(`${BASE_URL}/api/leads/${id}`, payload);
       toast.success('Lead updated');
       onRefresh(); 
     } catch (error) {
+      console.error("[API Error] Update failed:", error);
       toast.error('Update failed');
     }
   };
 
   const handleAddNote = async (id, noteText) => {
+    console.log(`[API] Adding note to lead ${id} at: ${BASE_URL}/api/leads/${id}/notes`);
     try {
-      await axios.post(`${API_URL}/${id}/notes`, { text: noteText });
+      await axios.post(`${BASE_URL}/api/leads/${id}/notes`, { text: noteText });
       toast.success('Activity updated');
       onRefresh();
     } catch (error) {
+      console.error("[API Error] Note addition failed:", error);
       toast.error('Activity log failed');
     }
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm("Purge this lead from system?")) return;
+    console.log(`[API] Deleting lead ${id} at: ${BASE_URL}/api/leads/${id}`);
     try {
-      await axios.delete(`${API_URL}/${id}`);
+      await axios.delete(`${BASE_URL}/api/leads/${id}`);
       toast.success('Lead purged');
       onRefresh();
     } catch (error) {
+      console.error("[API Error] Deletion failed:", error);
       toast.error('Deletion failed');
     }
   };
