@@ -9,7 +9,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn, getLeadStatus } from '../lib/utils';
 import { StatusBadge } from './StatusBadge';
 
-const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.VITE_API_URL || "https://clm-backend-2wzs.onrender.com";
+const API_URL = `${BASE_URL}/api/leads`;
+
+console.log("ENV URL:", import.meta.env.VITE_API_URL);
+console.log("BASE_URL:", BASE_URL);
+console.log("API_URL:", API_URL);
 
 function LeadList({ leads = [], isLoading, onRefresh, externalSearchTerm = '' }) {
   const [statusFilter, setStatusFilter] = useState('all');
@@ -17,9 +22,9 @@ function LeadList({ leads = [], isLoading, onRefresh, externalSearchTerm = '' })
   const [sortBy, setSortBy] = useState('newest');
 
   const handleUpdate = async (id, payload) => {
-    console.log(`[API] Updating lead ${id} at: ${BASE_URL}/api/leads/${id}`);
+    console.log(`[API] Updating lead ${id} at: ${API_URL}/${id}`);
     try {
-      await axios.put(`${BASE_URL}/api/leads/${id}`, payload);
+      await axios.put(`${API_URL}/${id}`, payload);
       toast.success('Lead updated');
       onRefresh(); 
     } catch (error) {
@@ -29,9 +34,9 @@ function LeadList({ leads = [], isLoading, onRefresh, externalSearchTerm = '' })
   };
 
   const handleAddNote = async (id, noteText) => {
-    console.log(`[API] Adding note to lead ${id} at: ${BASE_URL}/api/leads/${id}/notes`);
+    console.log(`[API] Adding note to lead ${id} at: ${API_URL}/${id}/notes`);
     try {
-      await axios.post(`${BASE_URL}/api/leads/${id}/notes`, { text: noteText });
+      await axios.post(`${API_URL}/${id}/notes`, { text: noteText });
       toast.success('Activity updated');
       onRefresh();
     } catch (error) {
@@ -42,9 +47,9 @@ function LeadList({ leads = [], isLoading, onRefresh, externalSearchTerm = '' })
 
   const handleDelete = async (id) => {
     if (!window.confirm("Purge this lead from system?")) return;
-    console.log(`[API] Deleting lead ${id} at: ${BASE_URL}/api/leads/${id}`);
+    console.log(`[API] Deleting lead ${id} at: ${API_URL}/${id}`);
     try {
-      await axios.delete(`${BASE_URL}/api/leads/${id}`);
+      await axios.delete(`${API_URL}/${id}`);
       toast.success('Lead purged');
       onRefresh();
     } catch (error) {

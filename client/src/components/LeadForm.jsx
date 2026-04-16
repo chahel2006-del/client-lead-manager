@@ -3,7 +3,12 @@ import axios from 'axios';
 import { UserPlus, Sparkles, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 
-const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.VITE_API_URL || "https://clm-backend-2wzs.onrender.com";
+const API_URL = `${BASE_URL}/api/leads`;
+
+console.log("ENV URL:", import.meta.env.VITE_API_URL);
+console.log("BASE_URL:", BASE_URL);
+console.log("API_URL:", API_URL);
 
 const INITIAL_FORM_STATE = {
   name: '',
@@ -45,7 +50,7 @@ function LeadForm({ onLeadAdded }) {
     }
 
     setIsLoading(true);
-    console.log(`[API] Creating lead at: ${BASE_URL}/api/leads`);
+    console.log(`[API] Creating lead at: ${API_URL}`);
     
     try {
       const payload = {
@@ -57,7 +62,7 @@ function LeadForm({ onLeadAdded }) {
         source: 'Form' // Keeping internal default
       };
 
-      await axios.post(`${BASE_URL}/api/leads`, payload);
+      await axios.post(API_URL, payload);
       
       toast.success('Lead Created', {
         description: `${formData.name} added to pipeline.`

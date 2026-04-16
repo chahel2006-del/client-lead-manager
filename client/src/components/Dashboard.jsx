@@ -11,7 +11,12 @@ import { StatsBoard } from './StatsBoard';
 import ErrorBoundary from './ErrorBoundary';
 import { cn } from '../lib/utils';
 
-const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.VITE_API_URL || "https://clm-backend-2wzs.onrender.com";
+const API_URL = `${BASE_URL}/api/leads`;
+
+console.log("ENV URL:", import.meta.env.VITE_API_URL);
+console.log("BASE_URL:", BASE_URL);
+console.log("API_URL:", API_URL);
 
 function Dashboard({ onLogout }) {
   const [leads, setLeads] = useState([]);
@@ -22,9 +27,9 @@ function Dashboard({ onLogout }) {
   
   const fetchLeads = useCallback(async () => {
     setIsLoading(true);
-    console.log(`[API] Fetching leads from: ${BASE_URL}/api/leads`);
+    console.log(`[API] Fetching leads from: ${API_URL}`);
     try {
-      const response = await axios.get(`${BASE_URL}/api/leads`);
+      const response = await axios.get(API_URL);
       if (response && response.data && Array.isArray(response.data)) {
         setLeads(response.data);
       } else {
